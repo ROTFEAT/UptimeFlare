@@ -25,7 +25,20 @@ const workerConfig: WorkerConfig = {
       expectedCodes: [200],
       timeout: 10000,
     },
+    {
+      id: 'hhcnctech_main',
+      name: 'hhcnctech.com',
+      method: 'GET',
+      target: 'https://hhcnctech.com/',
+      statusPageLink: 'https://hhcnctech.com/',
+      expectedCodes: [200],
+      timeout: 10000,
+    },
   ],
+  notification: {
+    timeZone: 'Asia/Shanghai',
+    skipErrorChangeNotification: true,
+  },
 }
 
 const maintenances: MaintenanceConfig[] = []

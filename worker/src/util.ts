@@ -87,9 +87,7 @@ async function webhookNotify(webhook: WebhookConfig, message: string) {
     return
   }
 
-  console.log(
-    'Sending webhook notification: ' + JSON.stringify(message) + ' to webhook ' + webhook.url
-  )
+  console.log('Sending webhook notification')
   try {
     let url = webhook.url
     let method = webhook.method
@@ -127,22 +125,25 @@ async function webhookNotify(webhook: WebhookConfig, message: string) {
         throw 'Unrecognized payload type: ' + webhook.payloadType
     }
 
-    console.log(
-      `Webhook finalized parameters: ${method} ${url}, headers ${JSON.stringify(
-        Object.fromEntries(headers.entries())
-      )}, body ${JSON.stringify(body)}`
-    )
     const resp = await fetchTimeout(url, webhook.timeout ?? 5000, { method, headers, body })
 
     if (!resp.ok) {
       console.log(
-        'Error calling webhook server, code: ' + resp.status + ', response: ' + (await resp.text())
+        'Error calling webhook server, code: ' + resp.status
       )
+    } else if (new URL(url).hostname === 'open.feishu.cn') {
+      const result = await resp.json<{ code?: number; StatusCode?: number }>()
+      const code = result.code ?? result.StatusCode
+      if (code !== 0) {
+        console.log('Feishu rejected notification, code: ' + code)
+      } else {
+        console.log('Webhook notification sent successfully, code: ' + resp.status)
+      }
     } else {
       console.log('Webhook notification sent successfully, code: ' + resp.status)
     }
   } catch (e) {
-    console.log('Error calling webhook server: ' + e)
+    console.log('Error calling webhook server (request details redacted)')
   }
 }
 

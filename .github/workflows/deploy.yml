@@ -53,6 +53,18 @@ jobs:
 
       # Resources already exist. The checked-in Wrangler files are authoritative.
       # Do not run Terraform imports or recreate the production database.
+      - name: Sync Feishu Worker secret
+        working-directory: worker
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          FEISHU_WEBHOOK_URL: ${{ secrets.FEISHU_WEBHOOK_URL }}
+        run: |
+          if [ -z "$FEISHU_WEBHOOK_URL" ]; then
+            echo '::error::Add the FEISHU_WEBHOOK_URL Actions secret before deploying.'
+            exit 1
+          fi
+          printf '%s' "$FEISHU_WEBHOOK_URL" | npx wrangler secret put FEISHU_WEBHOOK_URL
+
       - name: Deploy monitor and ten-minute schedule
         working-directory: worker
         env:

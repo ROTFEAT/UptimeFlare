@@ -9,10 +9,25 @@ import pLimit from 'p-limit'
 export interface Env {
   REMOTE_CHECKER_DO: DurableObjectNamespace<RemoteChecker>
   UPTIMEFLARE_D1: D1Database
+  FEISHU_WEBHOOK_URL?: string
 }
 
 const Worker = {
   async scheduled(event: ScheduledEvent, env: Env, ctx: ExecutionContext): Promise<void> {
+    // Resolve the webhook only inside the Worker; never embed it in Pages assets.
+    if (env.FEISHU_WEBHOOK_URL) {
+      workerConfig.notification = {
+        ...workerConfig.notification,
+        webhook: {
+          url: env.FEISHU_WEBHOOK_URL,
+          payloadType: 'json',
+          payload: { msg_type: 'text', content: { text: '$MSG' } },
+          timeout: 10000,
+        },
+      }
+    } else if (workerConfig.notification) {
+      delete workerConfig.notification.webhook
+    }
     const workerLocation = (await getWorkerLocation()) || 'ERROR'
     console.log(`Running scheduled event on ${workerLocation}...`)
 
