@@ -1,3 +1,4 @@
+account_id = "94d197e33c0d7c88c00816c99445ddcc"
 name = "uptimeflare_worker"
 main = "src/index.ts"
 compatibility_date = "2025-04-02"
@@ -6,4 +7,18 @@ compatibility_flags = [ "nodejs_compat" ]
 [[d1_databases]]
 binding = "UPTIMEFLARE_D1"
 database_name = "uptimeflare_d1"
-database_id = "00000000-0000-0000-0000-000000000000"
+database_id = "f7758dd2-69e6-4f75-91fc-122366ed9742"
+
+[triggers]
+crons = ["*/10 * * * *"]
+
+[observability]
+enabled = true
+
+[[durable_objects.bindings]]
+name = "REMOTE_CHECKER_DO"
+class_name = "RemoteChecker"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["RemoteChecker"]

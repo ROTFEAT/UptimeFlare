@@ -1,3 +1,4 @@
+pages_build_output_dir = ".vercel/output/static"
 name = "uptimeflare"
 compatibility_date = "2025-04-02"
 compatibility_flags = [ "nodejs_compat" ]
@@ -5,4 +6,4 @@ compatibility_flags = [ "nodejs_compat" ]
 [[d1_databases]]
 binding = "UPTIMEFLARE_D1"
 database_name = "uptimeflare_d1"
-database_id = "00000000-0000-0000-0000-000000000000"
+database_id = "f7758dd2-69e6-4f75-91fc-122366ed9742"
